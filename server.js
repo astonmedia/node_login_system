@@ -1,5 +1,8 @@
 const express = require("express");
 const path = require("path");
+const session = require("express-session");
+const { v4: uuidv4 } = require("uuid");
+const router = require("./router");
 
 const app = express();
 
@@ -14,6 +17,18 @@ app.set("view engine", "ejs");
 // Load static assets
 app.use("/static", express.static(path.join(__dirname, "public")));
 app.use("/assets", express.static(path.join(__dirname, "public/assets")));
+
+// Load sessions
+app.use(
+  session({
+    secret: uuidv4(),
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+// Load Router
+app.use("/route", router);
 
 // Home route
 app.get("/", (req, res) => {
